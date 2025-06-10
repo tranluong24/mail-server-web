@@ -23,10 +23,15 @@ export const createEmails = async (req, res) => {
         }
 
         // Generate 3 random emails
+        // const emails = [
+        //     `${username}1${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`,
+        //     `${username}2${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`,
+        //     `${username}3${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`
+        // ];
         const emails = [
-            `${username}1${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`,
-            `${username}2${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`,
-            `${username}3${Math.floor(Math.random() * 9000) + 1000}@email.tekmonk.edu.vn`
+            `${username}a@email.tekmonk.edu.vn`,
+            `${username}b@email.tekmonk.edu.vn`,
+            `${username}c@email.tekmonk.edu.vn`
         ];
         console.log('📧 Generated emails:', emails);
 
