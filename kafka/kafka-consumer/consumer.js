@@ -5,7 +5,7 @@ dotenv.config();
 
 const kafka = new Kafka({
   clientId: "mail-backend",
-  brokers: [`${process.env.KAFKA_BROKER}:9092`],
+  brokers: [`${process.env.KAFKA_BROKER}`],
 });
 
 export async function consumeMail(topic) {
