@@ -94,15 +94,15 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
 
       // --- THÊM ĐOẠN KIỂM TRA TÀI KHOẢN TỒN TẠI TẠI ĐÂY ---
-      if (localStorage.getItem("currentUser")) {
-        alert(
-          "Mỗi thiết bị chỉ được đăng ký một tài khoản duy nhất. Nếu bạn đã có tài khoản, vui lòng đăng nhập."
-        );
-        // Chuyển người dùng về modal đăng nhập để tiện lợi hơn
-        registerModal.hide();
-        loginModal.show();
-        return; // Dừng hàm ngay lập tức
-      }
+      //   if (localStorage.getItem("currentUser")) {
+      //     alert(
+      //       "Mỗi thiết bị chỉ được đăng ký một tài khoản duy nhất. Nếu bạn đã có tài khoản, vui lòng đăng nhập."
+      //     );
+      //     // Chuyển người dùng về modal đăng nhập để tiện lợi hơn
+      //     registerModal.hide();
+      //     loginModal.show();
+      //     return; // Dừng hàm ngay lập tức
+      //   }
       // --- KẾT THÚC ĐOẠN KIỂM TRA ---
 
       const username = this.querySelector('input[type="text"]').value;
@@ -122,86 +122,97 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Show loading modal with custom message
-      const loadingModalEl = document.getElementById("loadingModal");
-      const loadingMessage = loadingModalEl.querySelector(".modal-body");
-      loadingMessage.innerHTML = `
-            <div class="text-center">
-                <div class="spinner-border text-primary mb-3" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p>Đang tạo các nhóm dự án cho bạn..</p>
-                <p class="text-muted small">Vui lòng đợi trong giây lát</p>
-            </div>
-        `;
-      loadingModal.show();
+    //   const loadingModalEl = document.getElementById("loadingModal");
+    //   const loadingMessage = loadingModalEl.querySelector(".modal-body");
+    //   loadingMessage.innerHTML = `
+    //         <div class="text-center">
+    //             <div class="spinner-border text-primary mb-3" role="status">
+    //                 <span class="visually-hidden">Loading...</span>
+    //             </div>
+    //             <p>Đang tạo các nhóm dự án cho bạn..</p>
+    //             <p class="text-muted small">Vui lòng đợi trong giây lát</p>
+    //         </div>
+    //     `;
+    //   loadingModal.show();
 
       try {
         // Call API to create emails
-        const response = await fetch("/api/emails/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username }),
-        });
+        // const response = await fetch("/api/emails/create", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ username }),
+        // });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Không thể tạo email");
-        }
+        // if (!response.ok) {
+        //   const errorData = await response.json();
+        //   throw new Error(errorData.error || "Không thể tạo email");
+        // }
 
-        const data = await response.json();
+        // const data = await response.json();
         localStorage.setItem(
           "currentUser",
           JSON.stringify({ username, password })
         );
-        // Store emails in localStorage
-        localStorage.setItem(`${username}-emails`, JSON.stringify(data.emails));
-
-        // Save account information
-        const accountResponse = await fetch("/api/accounts/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
+        const suffixes = ["a", "b", "c"];
+        const emails = suffixes.map((suf) => {
+          return {
+            email: `${username}${suf}@email.tekmonk.edu.vn`,
+            password: password,
+          };
         });
 
-        if (!accountResponse.ok) {
-          console.error("Failed to save account information");
-        }
+        // Nếu muốn lưu vào localStorage:
+        localStorage.setItem(`${username}-emails`, JSON.stringify(emails));
+
+        // // Store emails in localStorage
+        // localStorage.setItem(`${username}-emails`, JSON.stringify(data.emails));
+
+        // Save account information
+        // const accountResponse = await fetch("/api/accounts/register", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ username, password }),
+        // });
+
+        // if (!accountResponse.ok) {
+        //   console.error("Failed to save account information");
+        // }
 
         // Hide loading modal
-        loadingModal.hide();
-
+        // loadingModal.hide();
+                    // ${
+                    //   data.failedEmails
+                    //     ? `
+                    //     <hr>
+                    //     <p class="text-warning">Một số email không thể tạo thư mục mail:</p>
+                    //     <ul>
+                    //         ${data.failedEmails
+                    //           .map(
+                    //             (failed) => `
+                    //             <li>${failed.email} - ${failed.error}</li>
+                    //         `
+                    //           )
+                    //           .join("")}
+                    //     </ul>
+                    //     <p class="small text-muted">Bạn vẫn có thể sử dụng các email đã tạo thành công.</p>
+                    // `
+                    //     : ""
+                    // }
         // Show success message
         const successMessage = `
                 <div class="alert alert-success" role="alert">
                     <h4 class="alert-heading">Đăng ký thành công!</h4>
-                    <p>Đã tạo ${data.emails.length} nhóm dự án cho bạn:</p>
+                    <p>Đã tạo ${emails.length} nhóm dự án cho bạn:</p>
                     <ul>
-                        ${data.emails
-                          .map((email) => `<li>${email.email.length}</li>`)
+                        ${emails
+                          .map((email) => `<li>${email.length}</li>`)
                           .join("")}
                     </ul>
-                    ${
-                      data.failedEmails
-                        ? `
-                        <hr>
-                        <p class="text-warning">Một số email không thể tạo thư mục mail:</p>
-                        <ul>
-                            ${data.failedEmails
-                              .map(
-                                (failed) => `
-                                <li>${failed.email} - ${failed.error}</li>
-                            `
-                              )
-                              .join("")}
-                        </ul>
-                        <p class="small text-muted">Bạn vẫn có thể sử dụng các email đã tạo thành công.</p>
-                    `
-                        : ""
-                    }
+
                     <hr>
                     <p class="mb-0">Vui lòng đăng nhập để tiếp tục.</p>
                 </div>
@@ -509,50 +520,52 @@ document.addEventListener("DOMContentLoaded", function () {
       showSuccessModalLoadingState();
 
       // 3. Bắt đầu quá trình kiểm tra email
-    //   let checkCount = 0;
-    //   const maxChecks = 5; // Tăng số lần kiểm tra cho chắc chắn
-    //   let checkInterval = null; // Biến để quản lý interval
+      //   let checkCount = 0;
+      //   const maxChecks = 5; // Tăng số lần kiểm tra cho chắc chắn
+      //   let checkInterval = null; // Biến để quản lý interval
 
-    //   async function checkForNewEmail() {
-    //     checkCount++;
-    //     console.log(`Checking for email... Attempt ${checkCount}/${maxChecks}`);
+      //   async function checkForNewEmail() {
+      //     checkCount++;
+      //     console.log(`Checking for email... Attempt ${checkCount}/${maxChecks}`);
 
-    //     try {
-    //       const emailResponse = await fetch(
-    //         `/api/emails/${userEmails[index].email}/latest/v2`
-    //       );
-    //       if (!emailResponse.ok) {
-    //         throw new Error("Không thể lấy thông tin email từ server");
-    //       }
-    //       const emailData = await emailResponse.json();
+      //     try {
+      //       const emailResponse = await fetch(
+      //         `/api/emails/${userEmails[index].email}/latest/v2`
+      //       );
+      //       if (!emailResponse.ok) {
+      //         throw new Error("Không thể lấy thông tin email từ server");
+      //       }
+      //       const emailData = await emailResponse.json();
 
-    //       if (emailData && emailData.loginLink) {
-    //         // Tìm thấy link, cập nhật modal và dừng kiểm tra
-    //         console.log("Login link found!", emailData.loginLink);
-    //         clearInterval(checkInterval); // Dừng vòng lặp
-    //         updateSuccessModalWithLink(emailData.loginLink);
-    //       } else if (checkCount >= maxChecks) {
-    //         // Đã hết số lần kiểm tra mà không có link
-    //         console.log("Max checks reached without finding login link.");
-    //         clearInterval(checkInterval); // Dừng vòng lặp
-    //         showErrorModal(
-    //           "Không nhận được email xác nhận từ Máy chủ sau một khoảng thời gian. Vui lòng thử lại sau."
-    //         );
-    //       }
-    //     } catch (error) {
-    //       console.error("Error checking email:", error);
-    //       clearInterval(checkInterval); // Dừng vòng lặp khi có lỗi
-    //       showErrorModal(error.message);
-    //     }
-    //   }
+      //       if (emailData && emailData.loginLink) {
+      //         // Tìm thấy link, cập nhật modal và dừng kiểm tra
+      //         console.log("Login link found!", emailData.loginLink);
+      //         clearInterval(checkInterval); // Dừng vòng lặp
+      //         updateSuccessModalWithLink(emailData.loginLink);
+      //       } else if (checkCount >= maxChecks) {
+      //         // Đã hết số lần kiểm tra mà không có link
+      //         console.log("Max checks reached without finding login link.");
+      //         clearInterval(checkInterval); // Dừng vòng lặp
+      //         showErrorModal(
+      //           "Không nhận được email xác nhận từ Máy chủ sau một khoảng thời gian. Vui lòng thử lại sau."
+      //         );
+      //       }
+      //     } catch (error) {
+      //       console.error("Error checking email:", error);
+      //       clearInterval(checkInterval); // Dừng vòng lặp khi có lỗi
+      //       showErrorModal(error.message);
+      //     }
+      //   }
 
-    //   // Bắt đầu kiểm tra sau 5 giây, và lặp lại mỗi 6 giây
-    //   checkInterval = setInterval(checkForNewEmail, 6000);
-    //   setTimeout(checkForNewEmail, 5000); // Lần check đầu tiên
+      //   // Bắt đầu kiểm tra sau 5 giây, và lặp lại mỗi 6 giây
+      //   checkInterval = setInterval(checkForNewEmail, 6000);
+      //   setTimeout(checkForNewEmail, 5000); // Lần check đầu tiên
 
       function longPollForEmail() {
         console.log("Bắt đầu long poll...");
-        fetch(`/api/emails/${userEmails[index].email}/latest/v2`, { method: "GET" })
+        fetch(`/api/emails/${userEmails[index].email}/latest/v2`, {
+          method: "GET",
+        })
           .then((res) => {
             if (!res.ok) {
               throw new Error("Không thể lấy thông tin email từ server");
@@ -577,7 +590,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Gọi lần đầu
       longPollForEmail();
-
     } catch (error) {
       console.error("Error in handleCardClick:", error);
       showErrorModal(error.message); // Hiển thị lỗi chung nếu gửi yêu cầu ban đầu thất bại
