@@ -300,24 +300,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const password = this.querySelector('input[type="password"]').value;
 
     // Lấy currentUser từ localStorage
-    const savedUserJSON = localStorage.getItem("currentUser");
-    if (!savedUserJSON) {
-      alert("Chưa có tài khoản nào được đăng ký");
-      return;
-    }
+    // const savedUserJSON = localStorage.getItem("currentUser");
+    // if (!savedUserJSON) {
+    //   alert("Chưa có tài khoản nào được đăng ký");
+    //   return;
+    // }
 
-    const savedUser = JSON.parse(savedUserJSON);
+    // const savedUser = JSON.parse(savedUserJSON);
 
     // So sánh username và password
-    if (username === savedUser.username && password === savedUser.password) {
+    if (username.includes("student") && password) {
       // Lấy emails đã lưu trong localStorage
-      const savedEmailsJSON = localStorage.getItem(`${username}-emails`);
-      if (!savedEmailsJSON) {
-        alert("Không tìm thấy dữ liệu của tài khoản");
-        return;
-      }
+      // const savedEmailsJSON = localStorage.getItem(`${username}-emails`);
+      // if (!savedEmailsJSON) {
+      //   alert("Không tìm thấy dữ liệu của tài khoản");
+      //   return;
+      // }
 
-      const userEmails = JSON.parse(savedEmailsJSON);
+      // const userEmails = JSON.parse(savedEmailsJSON);
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({ username, password })
+        );
+        const suffixes = ["a", "b", "c"];
+        const emails = suffixes.map((suf) => {
+          return {
+            email: `${username}${suf}@email.tekmonk.edu.vn`,
+            password: password,
+          };
+        });
+
+        // Nếu muốn lưu vào localStorage:
+        localStorage.setItem(`${username}-emails`, JSON.stringify(emails));
 
       // Hiển thị giao diện đăng nhập thành công
       loginModal.hide();
